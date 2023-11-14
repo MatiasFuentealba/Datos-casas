@@ -1,0 +1,57 @@
+#Datos
+datos = dummy_cols(datos_metodos, select_columns = "Comuna", remove_first_dummy = T)
+datos = subset(datos, select = -Comuna)
+
+#Matriz de correlación
+M = datos[,4:13]
+corr=cor(M)
+chart.Correlation(M)
+
+df <- as.data.frame(as.table(corr))
+names(df) <- c("X", "Y", "Correlation")
+
+
+ggplot(df, aes(X, Y, fill = Correlation)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "blue") +
+  labs(title = "Correlation Heatmap", x = "", y = "") +
+  theme_minimal()
+
+help(plot)
+
+plot(datos$Antiguedad, datos$Precio)
+plot(datos$Metros_totales, datos$Precio)
+plot(datos$Metros_utiles, datos$Precio)
+
+#ANOVA sin comuna
+summary(aov(datos$Precio ~ datos$Antiguedad + datos$Casa + datos$Metros_totales + datos$Metros_utiles
+            + datos$Dormitorios + datos$Pisos + datos$Piscina + datos$Estacionamiento +
+              datos$Metro_dist + datos$Super_dist + datos$Baños))
+#ANOVA con comuna
+
+summary(aov(datos$Precio ~ datos$Antiguedad + datos$Casa + datos$Metros_totales + datos$Metros_utiles
+    + datos$Dormitorios + datos$Pisos + datos$Piscina + datos$Estacionamiento 
+    + datos$Metro_dist + datos$Super_dist + datos_metodos$Comuna + datos$Baños))
+
+#Modelo lineal simple
+modelo_simple = lm(formula = Precio ~ Antiguedad + Casa + log(Metros_totales) + Metros_utiles + Baños
+                   + Dormitorios + Pisos + Piscina + Estacionamiento + Metro_dist + Super_dist, data = datos_metodos)
+
+summary(modelo_simple)
+
+
+modelo_simple2 = lm(formula = Precio ~ Antiguedad + Casa + log(Metros_totales) + Metros_utiles + Comuna + Baños
+                   + Dormitorios + Pisos + Piscina + Estacionamiento + Metro_dist + Super_dist, data = datos_metodos)
+
+summary(modelo_simple2)
+#Lasso
+
+X = model.matrix(modelo_simple)[, -1]
+
+lasso1 = cv.glmnet(X, datos_metodos$Precio, alpha = 1, standardize = T)
+head(coef(lasso1),41)
+
+G = model.matrix(modelo_simple2)[, -1]
+
+lasso2 = cv.glmnet(G, datos_metodos$Precio, alpha = 1, standardize = T)
+head(coef(lasso2),41)
