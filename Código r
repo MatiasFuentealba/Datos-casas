@@ -17,7 +17,7 @@ ggplot(df, aes(X, Y, fill = Correlation)) +
   labs(title = "Correlation Heatmap", x = "", y = "") +
   theme_minimal()
 
-help(plot)
+#Gráficos
 
 plot(datos$Antiguedad, datos$Precio)
 plot(datos$Metros_totales, datos$Precio)
