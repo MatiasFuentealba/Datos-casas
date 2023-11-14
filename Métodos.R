@@ -27,8 +27,8 @@ plot(datos$Metros_utiles, datos$Precio)
 summary(aov(datos$Precio ~ datos$Antiguedad + datos$Casa + datos$Metros_totales + datos$Metros_utiles
             + datos$Dormitorios + datos$Pisos + datos$Piscina + datos$Estacionamiento +
               datos$Metro_dist + datos$Super_dist + datos$Baños))
-#ANOVA con comuna
 
+#ANOVA con comuna
 summary(aov(datos$Precio ~ datos$Antiguedad + datos$Casa + datos$Metros_totales + datos$Metros_utiles
     + datos$Dormitorios + datos$Pisos + datos$Piscina + datos$Estacionamiento 
     + datos$Metro_dist + datos$Super_dist + datos_metodos$Comuna + datos$Baños))
